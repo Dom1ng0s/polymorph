@@ -1,0 +1,47 @@
+{
+  "name": "João Silva",
+  "contact_info": {
+    "email": "joao.silva@exemplo.com",
+    "phone": "+55 11 99999-0000",
+    "linkedin": "linkedin.com/in/joaosilvadev",
+    "github": "github.com/joaosilvadev",
+    "location": "São Paulo, SP"
+  },
+  "summary": "Desenvolvedor Backend apaixonado por automação e eficiência. Tenho experiência em construir APIs robustas e scripts que resolvem problemas reais. Busco desafios onde possa aplicar Python e Inteligência Artificial para otimizar processos.",
+  "skills": [
+    "Python",
+    "FastAPI",
+    "Selenium",
+    "Docker",
+    "PostgreSQL",
+    "Git",
+    "Linux",
+    "Google Cloud Platform"
+  ],
+  "experience": [
+    {
+      "role": "Estagiário em Desenvolvimento",
+      "company": "Tech Inovação",
+      "period": "Jan 2023 - Jan 2024",
+      "description": "Auxiliei na migração de scripts legados para Python 3. Implementei rotinas de web scraping para coleta de dados de mercado, reduzindo o trabalho manual da equipe de marketing em 40%."
+    }
+  ],
+  "projects": [
+    {
+      "name": "Bot de Monitoramento de Preços",
+      "description": "Sistema que monitora 5 sites de e-commerce e envia alertas via Telegram quando o preço de um produto cai. Utiliza Playwright para navegação e SQLite para histórico.",
+      "technologies": ["Python", "Playwright", "Telegram API"]
+    }
+  ],
+  "education": [
+    {
+      "degree": "Análise e Desenvolvimento de Sistemas",
+      "institution": "Faculdade de Tecnologia",
+      "period": "2022 - 2024"
+    }
+  ],
+  "certifications": [
+    "Python Institute - PCEP",
+    "EF Set English Certificate (C1)"
+  ]
+}

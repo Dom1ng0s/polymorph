@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Currículo - {{ r.name }}</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <header>
+        <h1>{{ r.name }}</h1>
+        <div class="contact-info">
+            {{ r.contact_info.location }} 
+            {% if r.contact_info.phone %} | {{ r.contact_info.phone }} {% endif %}
+            {% if r.contact_info.email %} | {{ r.contact_info.email }} {% endif %}
+            {% if r.contact_info.linkedin %} | <a href="{{ r.contact_info.linkedin }}">LinkedIn</a> {% endif %}
+            {% if r.contact_info.github %} | <a href="{{ r.contact_info.github }}">GitHub</a> {% endif %}
+        </div>
+    </header>
+
+    {% if r.education %}
+    <section>
+        <h2>FORMAÇÃO ACADÊMICA</h2>
+        <div class="section-content">
+            <ul>
+                {% for edu in r.education %}
+                <li>
+                    <strong>{{ edu.degree }}</strong> pela {{ edu.institution }}
+                    {% if edu.period %} ({{ edu.period }}) {% endif %}
+                    {% if edu.details %} - {{ edu.details }} {% endif %}
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+    </section>
+    {% endif %}
+
+    {% if r.experience %}
+    <section>
+        <h2>EXPERIÊNCIA PROFISSIONAL</h2>
+        <div class="section-content">
+            {% for exp in r.experience %}
+            <div class="job">
+                <div class="job-title">{{ exp.company }}</div>
+                <div class="job-details">
+                    Cargo: {{ exp.role }} | {{ exp.period }}
+                </div>
+                <p>{{ exp.description | md }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if r.certifications %}
+    <section>
+        <h2>CURSOS E APRIMORAMENTOS</h2>
+        <div class="section-content">
+            {% for cert in r.certifications %}
+            <div class="course">
+                <div class="course-title">{{ cert.name }}</div>
+                <div class="course-details">
+                    {{ cert.institution }}
+                    {% if cert.workload %} | {{ cert.workload }}{% endif %}
+                </div>
+                {% if cert.details %}
+                <p>{{ cert.details }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if r.skills %}
+    <section>
+        <h2>HABILIDADES</h2>
+        <div class="section-content skills-container">
+            {{ r.skills | sort | join(' | ') }}
+        </div>
+    </section>
+    {% endif %}
+
+    {% if r.projects %}
+    <section>
+        <h2>PROJETOS</h2>
+        <div class="section-content">
+            {% for proj in r.projects %}
+            <div class="project">
+                <div class="project-title">{{ proj.name }}</div>
+                <div class="job-details">
+                    {% if proj.role %}{{ proj.role }}{% endif %}
+                    {% if proj.period %} | {{ proj.period }}{% endif %}
+                </div>
+                <p>{{ proj.description | md }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+    {% endif %}
+
+</body>
+</html>
