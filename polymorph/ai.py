@@ -17,11 +17,11 @@ class AIAgent:
         self.model = genai.GenerativeModel(model_name)
 
     def optimize_resume(self, resume_data: Dict, job_text: str) -> Dict[str, Any]:
-        """
-        Versão com RETRY AUTOMÁTICO para lidar com erro 429 (Rate Limit).
-        """
+        
         
         resume_content = {
+            "summary": resume_data.get("summary", ""),
+            "skills": resume_data.get("skills", []),
             "experience": resume_data.get("experience", []),
             "projects": resume_data.get("projects", [])
         }
@@ -31,22 +31,43 @@ class AIAgent:
         prompt = f"""
         Analise a VAGA e o CURRÍCULO fornecidos abaixo.
         
-        OBJETIVO: Otimização completa do currículo.
+        OBJETIVO: Otimização para sistemas ATS (Applicant Tracking Systems).
         
         TAREFAS:
         1. Identifique o nome da empresa e keywords.
-        2. Reescreva 'description' de experiências e projetos.
+        2. GERE UM NOVO RESUMO ('new_summary') em 1ª pessoa. Deve incluir o CARGO DA VAGA e as 3 tecnologias principais logo na primeira frase.
+        3. REORDENE AS SKILLS ('prioritized_skills') colocando as mais importantes para a vaga no topo da lista.
+        4. Reescreva o campo 'description' dentro de 'new_experience' e 'new_projects' usando palavras-chave da vaga. MANTENHA OS OUTROS CAMPOS (company, period, role, etc) INTACTOS.
         
         REGRAS:
-        - VERACIDADE TOTAL. Não invente nada.
+        - VERACIDADE TOTAL. Não invente skills.
+        - Mantenha a estrutura de lista de objetos para experiências e projetos.
+        - O campo de texto DEVE se chamar "description".
         - Retorne APENAS JSON válido.
         
-        FORMATO JSON:
+        FORMATO JSON OBRIGATÓRIO:
         {{
             "company": "Nome da Empresa",
-            "keywords": ["Skill1", "Skill2"],
-            "new_experience": [],
-            "new_projects": []
+            "keywords": ["Key1", "Key2"],
+            "new_summary": "Resumo otimizado...",
+            "prioritized_skills": ["Skill1", "Skill2"],
+            "new_experience": [
+                {{
+                    "company": "Nome da Empresa Original",
+                    "role": "Cargo Original",
+                    "period": "Data Original",
+                    "description": "Texto da descrição reescrito e otimizado..."
+                }}
+            ],
+            "new_projects": [
+                {{
+                    "name": "Nome do Projeto",
+                    "role": "Cargo/Função Original (MANTENHA)",
+                    "period": "Período Original (MANTENHA)",
+                    "technologies": ["Tech1", "Tech2"],
+                    "description": "Descrição do projeto reescrita..."
+                }}
+            ]
         }}
 
         VAGA:
@@ -56,7 +77,6 @@ class AIAgent:
         {resume_str}
         """
         
-        # Tenta até 3 vezes se der erro de cota
         max_retries = 3
         for attempt in range(max_retries):
             try:
@@ -73,21 +93,20 @@ class AIAgent:
                 
             except Exception as e:
                 error_str = str(e)
-                # Se for erro de cota (429), espera e tenta de novo
                 if "429" in error_str:
-                    wait_time = 20 * (attempt + 1) # Espera 20s, 40s...
-                    print(f"   ⏳ Cota de IA excedida (429). Aguardando {wait_time}s para tentar novamente...")
+                    wait_time = 20 * (attempt + 1)
+                    print(f"    Cota de IA excedida (429). Aguardando {wait_time}s...")
                     time.sleep(wait_time)
-                    continue # Tenta de novo
+                    continue 
                 
-                # Se for outro erro, ou se acabaram as tentativas
                 print(f"[AI Error] Falha na otimização: {e}")
                 break
         
-        # Fallback em caso de falha total
         return {
             "company": "Erro_AI",
             "keywords": [],
+            "new_summary": resume_data.get("summary", ""),
+            "prioritized_skills": resume_data.get("skills", []),
             "new_experience": resume_data.get("experience", []),
             "new_projects": resume_data.get("projects", [])
         }

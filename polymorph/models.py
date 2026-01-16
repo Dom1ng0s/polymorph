@@ -7,7 +7,7 @@ class ResumeData:
     name: str
     contact_info: Dict[str, str]
     summary: str
-    skills: Set[str]
+    skills: List[str]
     experience: List[Dict[str, str]] = field(default_factory=list)
     projects: List[Dict[str, str]] = field(default_factory=list) 
     education: List[Dict[str, str]] = field(default_factory=list)

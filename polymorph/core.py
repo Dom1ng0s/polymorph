@@ -28,7 +28,7 @@ class PolymorphCore:
             name=data.get("name", ""),
             contact_info=data.get("contact_info", {}),
             summary=data.get("summary", ""),
-            skills=set(data.get("skills", [])),
+            skills=list(data.get("skills", [])),
             experience=data.get("experience", []),
             projects=data.get("projects", []),
             education=data.get("education", []),
@@ -65,6 +65,9 @@ class PolymorphCore:
         if ai_result is None:
             print("[Core] Iniciando pipeline AI (Chamada API)...")
             resume_dict = {
+                "name": self.context.resume.name,
+                "summary": self.context.resume.summary, 
+                "skills": self.context.resume.skills,   
                 "experience": self.context.resume.experience,
                 "projects": self.context.resume.projects
             }
@@ -90,6 +93,14 @@ class PolymorphCore:
         if ai_result.get("keywords"):
             self.context.job.extracted_keywords = set(ai_result.get("keywords", []))
             print(f"      Keywords: {self.context.job.extracted_keywords}")
+            
+        if ai_result.get("new_summary"):
+            print("      Resumo (Summary) atualizado.")
+            self.context.resume.summary = ai_result.get("new_summary")
+
+        if ai_result.get("prioritized_skills"):
+            print("      Skills reordenadas por relevância.")
+            self.context.resume.skills = ai_result.get("prioritized_skills")
 
         if ai_result.get("new_experience"):
             print("      Experiências atualizadas.")

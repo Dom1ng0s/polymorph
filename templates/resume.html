@@ -19,6 +19,15 @@
         </div>
     </header>
 
+    {% if r.summary %}
+    <section>
+        <h2>RESUMO PROFISSIONAL</h2>
+        <div class="section-content">
+            <p>{{ r.summary }}</p>
+        </div>
+    </section>
+    {% endif %}
+
     {% if r.education %}
     <section>
         <h2>FORMAÇÃO ACADÊMICA</h2>
@@ -77,7 +86,7 @@
     <section>
         <h2>HABILIDADES</h2>
         <div class="section-content skills-container">
-            {{ r.skills | sort | join(' | ') }}
+            {{ r.skills | join(' | ') }}
         </div>
     </section>
     {% endif %}
@@ -89,11 +98,20 @@
             {% for proj in r.projects %}
             <div class="project">
                 <div class="project-title">{{ proj.name }}</div>
+                
                 <div class="job-details">
                     {% if proj.role %}{{ proj.role }}{% endif %}
-                    {% if proj.period %} | {{ proj.period }}{% endif %}
+                    {% if proj.role and proj.period %} | {% endif %}
+                    {% if proj.period %}{{ proj.period }}{% endif %}
                 </div>
+
                 <p>{{ proj.description | md }}</p>
+
+                {% if proj.technologies %}
+                <div class="job-details" style="font-size: 8pt; margin-top: 3px; color: #555;">
+                    <strong>Tech Stack:</strong> {{ proj.technologies | join(' · ') }}
+                </div>
+                {% endif %}
             </div>
             {% endfor %}
         </div>
